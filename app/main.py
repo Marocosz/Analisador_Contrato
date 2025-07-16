@@ -88,3 +88,18 @@ def upload_contract(
         raise HTTPException(status_code=500, detail=f"Falha ao processar o contrato com a IA: {e}")
     finally:
         os.remove(tmp_path) # Garante que o arquivo temporário seja deletado
+        
+
+@app.get("/contracts/{contract_name}", response_model=models.Contract, tags=["Contracts"])
+def get_contract_details(
+    contract_name: str,
+    db: Session = Depends(database.get_session),
+    current_user: models.User = Depends(auth.get_current_user)
+):
+    """
+    Recupera os detalhes de um contrato específico pelo seu nome de arquivo.
+    """
+    db_contract = crud.get_contract_by_filename(db, filename=contract_name)
+    if db_contract is None:
+        raise HTTPException(status_code=404, detail="Contrato não encontrado.")
+    return db_contract

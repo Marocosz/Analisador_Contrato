@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Analisador de Contratos</h1>
+        <h1>Analisador de Contratos com IA</h1>
 
         <div id="login-section" class="card">
             <h2>Login</h2>
@@ -21,16 +21,27 @@
             </form>
         </div>
 
-        <div id="upload-section" class="card hidden">
-            <h2>Upload de Contrato</h2>
-            <form id="upload-form">
-                <label for="contract-file">Selecione o arquivo (.pdf ou .docx)</label>
-                <input type="file" id="contract-file" accept=".pdf,.docx" required>
-                <button type="submit">Analisar</button>
-            </form>
+        <div id="app-section" class="hidden">
+            <div id="upload-section" class="card">
+                <h2>1. Upload de Novo Contrato</h2>
+                <form id="upload-form">
+                    <label for="contract-file">Selecione o arquivo (.pdf ou .docx)</label>
+                    <input type="file" id="contract-file" accept=".pdf,.docx" required>
+                    <button type="submit">Analisar</button>
+                </form>
+            </div>
+            
+            <div id="search-section" class="card">
+                <h2>2. Buscar Contrato Existente</h2>
+                <form id="search-form">
+                    <label for="search-filename">Nome do Arquivo do Contrato</label>
+                    <input type="text" id="search-filename" placeholder="ex: contrato_teste_01.pdf" required>
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
         </div>
         
-        <div id="loading" class="hidden">Analisando, por favor aguarde...</div>
+        <div id="loading" class="hidden">Buscando...</div>
         <div id="result-section"></div>
     </div>
 
