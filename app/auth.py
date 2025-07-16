@@ -10,34 +10,43 @@ from sqlmodel import Session
 
 from . import database, models
 
+
 # --- Configuração de Segurança ---
-# Mova para variáveis de ambiente (.env) em um projeto real!
-SECRET_KEY = "QyrBUPjP02auNvh7kxXGiyyAU8SXC8Iy" 
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = os.getenv("JWT_KEY")  # Key para proteção do sistema de criação de token
+ALGORITHM = "HS256"  # Algoritmo de criação dos tokens
+ACCESS_TOKEN_EXPIRE_MINUTES = 30 
 
 # Contexto para hashing de senhas
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Esquema OAuth2 que aponta para o nosso futuro endpoint de login
+# Esquema OAuth2 que aponta para o nosso futuro endpoint de login (Serve para extrair o token do cabeçalho)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
-# --- Funções de Segurança ---
+# Função para verificação do hash com a senha
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
+
+# Usando o pwd para criar o hash da senha
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
+
+# Criando o token de acesso de acordo com o tempo
 def create_access_token(data: dict):
+    """
+    Aqui o token se vincula com o determinado username na hora da criação
+    """
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-# --- Dependência para Proteger Endpoints ---
+
+# Função de defesa dos endpoints/verificação do token
+# OBS: O "Depends" é o gerenciador de dependencia
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_session)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -45,13 +54,14 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])  # Verificação do Token (ler o payload dele e ver se existe o vinculo com o username)
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
     
+    #Verificação de usuário com o banco de dados
     user = db.query(models.User).filter(models.User.username == username).first()
     if user is None:
         raise credentials_exception

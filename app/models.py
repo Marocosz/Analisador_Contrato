@@ -1,7 +1,10 @@
 from typing import Optional
 from sqlmodel import Field, SQLModel
+# Diferente do "schemas.py" aqui temos a representação dos dados para o banco de dados
 
 class User(SQLModel, table=True):
+    # O ID é Optional, visto que a API dará para o usuário automaticamente seu "ID", de forma incremental, então precisamos disso
+    # para o pydantic/sqlmodel não dar erro visto que seria "None" inicialmente e não "Int"
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(index=True, unique=True)
     hashed_password: str
