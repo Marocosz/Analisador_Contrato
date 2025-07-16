@@ -65,3 +65,10 @@ def update_contract_status(db: Session, contract_id: int, status: str):
         db.commit()
         db.refresh(db_contract)
     return db_contract
+
+
+def get_all_contract_filenames(db: Session):
+    # O .query(models.Contract.filename) seleciona apenas a coluna 'filename'
+    results = db.query(models.Contract.filename).all()
+    # O resultado vem como uma lista de tuplas, ex: [('contrato1.pdf',), ('contrato2.pdf',)]
+    return [filename for (filename,) in results]

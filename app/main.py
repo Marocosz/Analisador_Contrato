@@ -103,3 +103,15 @@ def get_contract_details(
     if db_contract is None:
         raise HTTPException(status_code=404, detail="Contrato não encontrado.")
     return db_contract
+
+
+@app.get("/contracts/list/filenames", response_model=list[str], tags=["Contracts"])
+def get_contract_filenames(
+    db: Session = Depends(database.get_session),
+    current_user: models.User = Depends(auth.get_current_user)
+):
+    """
+    Recupera uma lista com os nomes de todos os contratos existentes.
+    """
+    filenames = crud.get_all_contract_filenames(db)
+    return filenames

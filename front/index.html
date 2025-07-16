@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analisador de Contratos</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <h1>Analisador de Contratos com IA</h1>
@@ -30,7 +32,7 @@
                     <button type="submit">Analisar</button>
                 </form>
             </div>
-            
+
             <div id="search-section" class="card">
                 <h2>2. Buscar Contrato Existente</h2>
                 <form id="search-form">
@@ -39,12 +41,23 @@
                     <button type="submit">Buscar</button>
                 </form>
             </div>
+
+            <div class="card">
+                <button id="list-files-button">Listar todos os contratos no Banco de Dados</button>
+            </div>
+
+            <div id="upload-section" class="card">
+            </div>
+
+            <div id="search-section" class="card">
+            </div>
         </div>
-        
+
         <div id="loading" class="hidden">Buscando...</div>
         <div id="result-section"></div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>

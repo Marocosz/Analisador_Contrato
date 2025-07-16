@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchForm = document.getElementById('search-form');
     const resultSection = document.getElementById('result-section');
     const loadingDiv = document.getElementById('loading');
+    const listFilesButton = document.getElementById('list-files-button');
 
     const API_URL = 'http://127.0.0.1:8000';
     let apiToken = null;
@@ -162,6 +163,51 @@ document.addEventListener('DOMContentLoaded', () => {
             searchButton.disabled = false;
             searchButton.textContent = 'Buscar';
             loadingDiv.classList.add('hidden');
+        }
+    });
+
+
+    // --- Logica de listar os contratos
+    listFilesButton.addEventListener('click', async () => {
+        if (!apiToken) {
+            alert('Você precisa estar logado para ver a lista.');
+            return;
+        }
+
+        loadingDiv.classList.remove('hidden');
+        loadingDiv.textContent = 'Buscando lista de arquivos...';
+        resultSection.innerHTML = '';
+
+        try {
+            const response = await fetch(`${API_URL}/contracts/list/filenames`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${apiToken}` }
+            });
+
+            const filenames = await response.json();
+
+            if (!response.ok) {
+                throw new Error(filenames.detail || 'Erro ao buscar a lista de arquivos.');
+            }
+
+            if (filenames.length === 0) {
+                resultSection.innerHTML = `<div class="card"><p>Nenhum contrato encontrado no banco de dados.</p></div>`;
+            } else {
+                // Cria uma lista HTML (<ul>) com os nomes dos arquivos
+                const listHtml = filenames.map(name => `<li>${name}</li>`).join('');
+                resultSection.innerHTML = `
+                    <div class="card">
+                        <header><strong>Contratos no Banco de Dados</strong></header>
+                        <ul>${listHtml}</ul>
+                    </div>
+                `;
+            }
+
+        } catch (error) {
+            displayError(error.message);
+        } finally {
+            loadingDiv.classList.add('hidden');
+            loadingDiv.textContent = 'Buscando...'; // Reseta o texto do loading
         }
     });
 });
