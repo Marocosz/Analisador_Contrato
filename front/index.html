@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisador de Contratos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Analisador de Contratos</h1>
+
+        <div id="login-section" class="card">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" placeholder="Seu usuário" required>
+                <label for="password">Senha</label>
+                <input type="password" id="password" placeholder="Sua senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+
+        <div id="upload-section" class="card hidden">
+            <h2>Upload de Contrato</h2>
+            <form id="upload-form">
+                <label for="contract-file">Selecione o arquivo (.pdf ou .docx)</label>
+                <input type="file" id="contract-file" accept=".pdf,.docx" required>
+                <button type="submit">Analisar</button>
+            </form>
+        </div>
+        
+        <div id="loading" class="hidden">Analisando, por favor aguarde...</div>
+        <div id="result-section"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

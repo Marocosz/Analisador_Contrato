@@ -1,6 +1,7 @@
 import os  # <--- ADICIONE ESTA LINHA
 from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
 import shutil
 import tempfile
@@ -10,6 +11,18 @@ from . import auth, crud, models, schemas, database, processing
 models.SQLModel.metadata.create_all(bind=database.engine)  # Criação dos modelos - se já não foram criados
 
 app = FastAPI(title="Contract Analyzer API")
+
+origins = [
+    "http://localhost:8080", # Endereço comum para outros frameworks
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Permite todos os métodos (GET, POST, etc)
+    allow_headers=["*"], # Permite todos os cabeçalhos
+)
 
 
 # --- Endpoints de Autenticação e Usuários ---
