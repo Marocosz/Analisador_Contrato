@@ -352,8 +352,8 @@ O site, a API e o banco de dados PostgreSQL estão completamente hospedados na p
    Abra o terminal na pasta onde deseja salvar o projeto e execute:
 
    ```bash
-   git clone https://github.com/Marocosz/desafio_tecnico_biofy.git
-   ```
+   git clone https://github.com/Marocosz/Analisador_Contrato.git
+   ``` 
 
    Ou, se preferir, baixe o `.zip` diretamente pelo GitHub:
 
@@ -726,7 +726,7 @@ Pronto! Você criou seu usuário, autenticou e acessou um endpoint protegido usa
 
 Se tiver dúvidas, sugestões ou encontrar algum erro, sinta-se à vontade para abrir uma _issue_ no repositório:
 
-👉 [https://github.com/Marocosz/desafio_tecnico_biofy.git](https://github.com/Marocosz/desafio_tecnico_biofy.git)
+👉 [https://github.com/Marocosz/Analisador_Contrato](https://github.com/Marocosz/Analisador_Contrato)
 
 
 
