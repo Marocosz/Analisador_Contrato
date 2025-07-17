@@ -1,0 +1,15 @@
+# Ignora variáveis de ambiente
+.env
+.env.*
+
+# Banco de dados SQLite (se usado localmente)
+*.sqlite3
+*.db
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+
+# Ignora arquivos Python compilados
+__pycache__/
+*.py[cod]
