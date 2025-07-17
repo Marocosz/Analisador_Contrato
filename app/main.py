@@ -76,18 +76,34 @@ def read_users_me(current_user: models.User = Depends(auth.get_current_user)):
     # Se o token for inválido, o código nem chega a ser executado.
     return current_user
 
+
 # Task de background da analise
 def process_contract_async(file_path: str, contract_id: int):
+    print(f"[IA] Iniciando análise do contrato ID {contract_id}")
+    db = next(database.get_session())
 
-    db = next(database.get_session())  # Entrando no bd
     try:
+        # Verifica se o arquivo existe
+        if not os.path.exists(file_path):
+            print(f"[IA] Arquivo não encontrado: {file_path}")
+            crud.update_contract_status(db, contract_id, "failed")
+            return
+        
         extracted_data = processing.analyze_contract_with_ai(file_path)  # Extrai as informações do contrato com a IA
+        print(f"[IA] Extração concluída para contrato {contract_id}")
         crud.update_contract_with_data(db, contract_id, extracted_data)  # Update das informações no BD
+        
+        os.remove(file_path)
+        print(f"[IA] Arquivo removido: {file_path}")
+
     except Exception as e:
+        print(f"[Erro IA] Contrato ID {contract_id}: {e}")
         crud.update_contract_status(db, contract_id, "failed")
-        print(f"[Erro IA] Contrato ID {contract_id}: {e}")  # Ou logging
-    finally:
-        os.remove(file_path)  # Apagando o arquivo temporário
+
+        # Tenta remover mesmo após falha
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"[IA] Arquivo removido após erro: {file_path}")
 
 
 @app.post("/contracts/upload", response_model=models.Contract, tags=["Contracts"])
