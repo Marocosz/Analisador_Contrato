@@ -23,7 +23,7 @@ body {
 
 /* --- Layout Principal --- */
 .container {
-    max-width: 700px;
+    max-width: 800px;
     margin: 40px auto;
     padding: 20px;
 }
@@ -33,12 +33,24 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 24px;
-    margin-top: 24px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+#app-section,
+#login-section {
+    margin-top: 24px;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
 /* --- Tipografia --- */
-h1, h2 {
+h1,
+h2 {
     text-align: center;
     color: var(--primary-color);
     margin-bottom: 16px;
@@ -49,12 +61,12 @@ h1 {
 }
 
 h2 {
-    font-size: 1.8em;
-    border-bottom: 2px solid var(--primary-color);
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 8px;
 }
 
-/* --- Estilos de Formulário --- */
+/* --- Estilos de Formulário e Botões --- */
 form {
     display: flex;
     flex-direction: column;
@@ -64,6 +76,7 @@ form {
 label {
     font-weight: bold;
     margin-bottom: -5px;
+    font-size: 0.9em;
 }
 
 input[type="text"],
@@ -82,6 +95,7 @@ input:focus {
     border-color: var(--primary-color);
 }
 
+/* Regra geral para botões */
 button {
     padding: 12px 20px;
     font-size: 1.1em;
@@ -91,20 +105,27 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
+    transition: background-color 0.3s;
+}
+
+
+form button {
+    width: 100%;
 }
 
 button:hover {
     background-color: #004494;
 }
 
-button:active {
-    transform: translateY(1px);
-}
-
 button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+}
+
+.list-action {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
 }
 
 /* --- Seção de Resultados e Feedback --- */
@@ -114,32 +135,41 @@ button:disabled {
 
 #loading {
     text-align: center;
-    font-size: 1.2em;
     font-style: italic;
     color: var(--primary-color);
     padding: 20px;
 }
 
-#result-section {
+#result-section:empty,
+#contracts-list-output:empty {
+    display: none;
+}
+
+#result-section,
+#contracts-list-output {
     margin-top: 24px;
 }
 
-#result-section pre {
+pre {
     background-color: #2d2d2d;
     color: #f4f4f4;
     padding: 20px;
     border-radius: 8px;
-    white-space: pre-wrap; /* Garante que o texto quebre a linha */
+    white-space: pre-wrap;
     word-wrap: break-word;
-    overflow-x: auto;
 }
 
 .error-message {
-    background-color: #ffebee;
     color: var(--error-color);
     border: 1px solid var(--error-color);
     padding: 15px;
     border-radius: 8px;
     text-align: center;
     font-weight: bold;
+}
+
+#contracts-list-output ul {
+    list-style-position: inside;
+    padding-left: 20px;
+
 }

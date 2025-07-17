@@ -8,12 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultSection = document.getElementById('result-section');
     const loadingDiv = document.getElementById('loading');
     const listFilesButton = document.getElementById('list-files-button');
+    const contractsListOutput = document.getElementById('contracts-list-output');
 
     const API_URL = 'http://127.0.0.1:8000';
     let apiToken = null;
 
-    // Função para formatar a saída
+    // Função para formatar a saída de Upload e Busca
     function displayResult(data) {
+        contractsListOutput.innerHTML = ''; // Limpa a lista de contratos, se houver
         let formattedJson = JSON.stringify(data, null, 2);
         resultSection.innerHTML = `
             <div class="card">
@@ -25,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // função para formatar msg de erro
     function displayError(message) {
+        contractsListOutput.innerHTML = ''; // Limpa a lista de contratos, se houver
         resultSection.innerHTML = `<div class="error-message">${message}</div>`;
     }
 
@@ -70,9 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Lógica de Upload
+    // --- Lógica de Upload 
     uploadForm.addEventListener('submit', async (e) => { //async: palavra chave para função que realizará operações demoradas, e: objeto do evento
         e.preventDefault(); //Não recarregar a página
+        
+        // Verificação token
+        if (!apiToken) {
+            alert('Token expirado. Relogue');
+            return;
+        }
+        
         const uploadButton = uploadForm.querySelector('button');
         const fileInput = document.getElementById('contract-file');
 
@@ -84,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const file = fileInput.files[0]; //como file pode conter vários arquivos, aqui selecionamos o primeiro da lista
         const formData = new FormData(); //criação do objeto (caixa de correio) para a api
-        // A chave 'file' deve ser a mesma que a API espera no endpoint de upload
         formData.append('file', file); //colocamos o arquivo do upload dentro da "caixa"
 
         // Feedback visual para o usuário
@@ -92,13 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadButton.textContent = 'Analisando...';
         loadingDiv.classList.remove('hidden');
         resultSection.innerHTML = '';
+        contractsListOutput.innerHTML = ''; // <-- LIMPA A LISTA TAMBÉM
 
         try {
+            // requisição a api
             const response = await fetch(`${API_URL}/contracts/upload`, {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiToken}`
-                },
+                headers: { 'Authorization': `Bearer ${apiToken}` },
                 body: formData
             });
 
@@ -123,9 +132,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Lógica de busca
+    // --- Lógica de busca ---
     searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        // Verificação do token
+        if (!apiToken) {
+            alert('Token expirado. Relogue!');
+            return;
+        }
+        
         const searchButton = searchForm.querySelector('button');
         const filenameInput = document.getElementById('search-filename');
         const filename = filenameInput.value.trim(); //trim para remover espaços
@@ -140,8 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
         searchButton.textContent = 'Buscando...';
         loadingDiv.classList.remove('hidden');
         resultSection.innerHTML = '';
+        contractsListOutput.innerHTML = ''; // <-- LIMPA A LISTA TAMBÉM
 
         try {
+            // requisição a api
             const response = await fetch(`${API_URL}/contracts/${filename}`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${apiToken}` }
@@ -167,16 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- Logica de listar os contratos
+    // --- Logica de listar os contratos ---
     listFilesButton.addEventListener('click', async () => {
         if (!apiToken) {
-            alert('Você precisa estar logado para ver a lista.');
+            alert('Token expirado. Relogue!');
             return;
         }
 
+        // Atualização visual
         loadingDiv.classList.remove('hidden');
         loadingDiv.textContent = 'Buscando lista de arquivos...';
-        resultSection.innerHTML = '';
+        resultSection.innerHTML = ''; // Limpa a área de resultados de busca/upload
+        contractsListOutput.innerHTML = ''; // Limpa a lista antiga
 
         try {
             const response = await fetch(`${API_URL}/contracts/list/filenames`, {
@@ -184,30 +204,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Authorization': `Bearer ${apiToken}` }
             });
 
-            const filenames = await response.json();
+            const filenames = await response.json(); // resposta da api já formatada
 
             if (!response.ok) {
+                //se a api retornar um erro
                 throw new Error(filenames.detail || 'Erro ao buscar a lista de arquivos.');
             }
 
             if (filenames.length === 0) {
-                resultSection.innerHTML = `<div class="card"><p>Nenhum contrato encontrado no banco de dados.</p></div>`;
+                // se estiver vazio modificar o html
+                contractsListOutput.innerHTML = `<p>Nenhum contrato encontrado no banco de dados.</p>`;
             } else {
                 // Cria uma lista HTML (<ul>) com os nomes dos arquivos
                 const listHtml = filenames.map(name => `<li>${name}</li>`).join('');
-                resultSection.innerHTML = `
-                    <div class="card">
-                        <header><strong>Contratos no Banco de Dados</strong></header>
-                        <ul>${listHtml}</ul>
-                    </div>
-                `;
+                contractsListOutput.innerHTML = `<ul>${listHtml}</ul>`;
             }
 
         } catch (error) {
-            displayError(error.message);
+            // Em vez de displayError, colocamos o erro na própria área da lista
+            contractsListOutput.innerHTML = `<p style="color: red;">${error.message}</p>`;
         } finally {
             loadingDiv.classList.add('hidden');
-            loadingDiv.textContent = 'Buscando...'; // Reseta o texto do loading
+            loadingDiv.textContent = 'Processando...'; // Reseta o texto do loading
         }
     });
 });
