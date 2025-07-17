@@ -22,8 +22,8 @@ async def lifespan(app: FastAPI):
 # Inicialização do App e o lifespan como função de inicialização 
 app = FastAPI(title="Contract Analyzer API", lifespan=lifespan)
 
+# "http://localhost:8080",  # Servidor comum
 origins = [
-    "http://localhost:8080",  # Servidor comum
     "https://site-contratos-marcos.onrender.com"  # Servidor render
 ]
 
