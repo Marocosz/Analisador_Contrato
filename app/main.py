@@ -2,7 +2,7 @@ import os
 import shutil
 import tempfile
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
@@ -76,9 +76,23 @@ def read_users_me(current_user: models.User = Depends(auth.get_current_user)):
     # Se o token for inválido, o código nem chega a ser executado.
     return current_user
 
+# Task de background da analise
+def process_contract_async(file_path: str, contract_id: int):
+
+    db = next(database.get_session())  # Entrando no bd
+    try:
+        extracted_data = processing.analyze_contract_with_ai(file_path)  # Extrai as informações do contrato com a IA
+        crud.update_contract_with_data(db, contract_id, extracted_data)  # Update das informações no BD
+    except Exception as e:
+        crud.update_contract_status(db, contract_id, "failed")
+        print(f"[Erro IA] Contrato ID {contract_id}: {e}")  # Ou logging
+    finally:
+        os.remove(file_path)  # Apagando o arquivo temporário
+
 
 @app.post("/contracts/upload", response_model=models.Contract, tags=["Contracts"])
 def upload_contract(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),  # Upload de arquivo obrigatório
     db: Session = Depends(database.get_session),
     current_user: models.User = Depends(auth.get_current_user)):  # Verificação do token
@@ -94,15 +108,10 @@ def upload_contract(
     
     db_contract = crud.create_contract(db, filename=file.filename)  # Cria no banco de dados
     
-    try:
-        extracted_data = processing.analyze_contract_with_ai(tmp_path)  # Usar o agente e extrair as informações
-        updated_contract = crud.update_contract_with_data(db, db_contract.id, extracted_data)  # Atualiza o cotnrato no bd
-        return updated_contract
-    except Exception as e:  # Se não acontecer, erro 500 de processar
-        crud.update_contract_status(db, db_contract.id, "failed")
-        raise HTTPException(status_code=500, detail=f"Falha ao processar o contrato com a IA: {e}")
-    finally:
-        os.remove(tmp_path) # Garante que o arquivo temporário seja deletado
+    # Inicia análise em segundo plano
+    background_tasks.add_task(process_contract_async, tmp_path, db_contract.id)
+    
+    return db_contract
         
 
 @app.get("/contracts/{contract_name}", response_model=models.Contract, tags=["Contracts"])
