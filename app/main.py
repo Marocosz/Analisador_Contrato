@@ -23,7 +23,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Contract Analyzer API", lifespan=lifespan)
 
 origins = [
-    "http://localhost:8080", # Endereço comum
     "https://site-contratos-marcos.onrender.com"  # Servidor render
 ]
 
