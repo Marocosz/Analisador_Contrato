@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analisador de Contratos</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <h1>Analisador de Contratos</h1>
@@ -22,40 +24,50 @@
         </div>
 
         <div id="app-section" class="hidden">
-            
+
             <div class="actions-grid">
                 <div id="upload-section" class="card">
-                    <h2>1. Upload de Novo Contrato</h2>
+                    <h2>Upload de Novo Contrato</h2>
                     <form id="upload-form">
                         <label for="contract-file">Selecione o arquivo (.pdf ou .docx)</label>
                         <input type="file" id="contract-file" accept=".pdf,.docx" required>
                         <button type="submit">Analisar</button>
                     </form>
                 </div>
-                
+
                 <div id="search-section" class="card">
-                    <h2>2. Buscar Contrato Existente</h2>
+                    <h2>Buscar Contrato Existente</h2>
                     <form id="search-form">
                         <label for="search-filename">Nome do Arquivo</label>
                         <input type="text" id="search-filename" placeholder="ex: contrato_teste_01.pdf" required>
                         <button type="submit">Buscar</button>
                     </form>
                 </div>
-            </div>
 
-            <div class="card">
-                <h2>3. Listar Contratos no Banco de Dados</h2>
-                <div class="list-action">
-                    <button id="list-files-button">Ver todos os arquivos</button>
+                <div id="delete-section" class="card">
+                    <h2>Deletar Contrato por Nome</h2>
+                    <form id="delete-contract-form">
+                        <label for="delete-filename">Nome do Arquivo</label>
+                        <input type="text" id="delete-filename" placeholder="ex: contrato_velho.pdf" required>
+                        <button type="submit" class="delete-button">Deletar</button>
+                    </form>
                 </div>
-                <div id="contracts-list-output"></div>
+
+                <div id="list-section" class="card">
+                    <h2>Listar Contratos no Banco de Dados</h2>
+                    <div class="list-action">
+                        <button id="list-files-button">Ver todos os arquivos</button>
+                    </div>
+                    <div id="contracts-list-output"></div>
+                </div>
             </div>
         </div>
 
         <div id="loading" class="hidden">Processando...</div>
         <div id="result-section"></div>
-        
+
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

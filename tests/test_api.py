@@ -1,4 +1,4 @@
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # Serve para fazer requisições diretas sem precisar da rede
 from app import schemas
 
 # Teste 1: Rotas públicas básicas
@@ -6,7 +6,6 @@ def test_read_root(client: TestClient):
     """Testa se a rota principal está online."""
     response = client.get("/")
     assert response.status_code == 200
-    # CORREÇÃO: Agora o teste verifica a mensagem exata que a API retorna
     assert response.json()["status"] == "API is running!"
 
 def test_create_user(client: TestClient):
@@ -70,7 +69,7 @@ def test_upload_contract_with_mocking(client: TestClient, monkeypatch):
     token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    # 1. Define uma função falsa que imita a resposta da IA
+    # Função falsa que imita a resposta da IA
     def fake_ai_analysis(file_path: str) -> schemas.ContractData:
         return schemas.ContractData(
             contracting_party="Empresa Teste SA",
@@ -81,15 +80,15 @@ def test_upload_contract_with_mocking(client: TestClient, monkeypatch):
             termination_clause="Multa de 10%."
         )
 
-    # 2. Usa o 'monkeypatch' do pytest para substituir a função real pela nossa função falsa
+    # Usa o 'monkeypatch' do pytest para substituir a função real pela nossa função falsa
     monkeypatch.setattr("app.processing.analyze_contract_with_ai", fake_ai_analysis)
 
-    # 3. Executa o upload. O arquivo em si não importa, pois a análise será a falsa.
-    file_content = "Este é um conteúdo de um pdf falso.".encode("utf-8")
+    # Executa o upload.
+    file_content = "Este é um conteúdo de um pdf falso.".encode("utf-8")  # Criação de um dado falso
     files = {"file": ("mock_contract.pdf", file_content, "application/pdf")}
     response = client.post("/contracts/upload", headers=headers, files=files)
 
-    # 4. Verifica os resultados
+    # Verifica os resultados
     assert response.status_code == 200
     data = response.json()
     assert data["filename"] == "mock_contract.pdf"

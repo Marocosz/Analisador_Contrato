@@ -16,7 +16,7 @@ def analyze_contract_with_ai(file_path: str) -> schemas.ContractData:
 
     # Inicializa a IA
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.5-flash",
         temperature=0,
         google_api_key=os.getenv("GEMINI_API_KEY")
     )

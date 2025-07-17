@@ -9,10 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingDiv = document.getElementById('loading');
     const listFilesButton = document.getElementById('list-files-button');
     const contractsListOutput = document.getElementById('contracts-list-output');
+    const deleteContractForm = document.getElementById('delete-contract-form');
+    const deleteFilenameInput = document.getElementById('delete-filename');
 
     // http://127.0.0.1:8000 para local
     // https://analisador-contratos.onrender.com render
-    const API_URL = 'https://analisador-contratos.onrender.com';  // ATUALIZAAAAA
+    const API_URL = 'https://analisador-contratos.onrender.com';    // ATUALIZAAAAA
     let apiToken = null;
 
     // Função para formatar a saída de Upload e Busca
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginButton.textContent = 'Entrando...';
 
         // requisição da api
-        const formData = new URLSearchParams();  //Formato padrão de resposta que a api espera
+        const formData = new URLSearchParams();   //Formato padrão de resposta que a api espera
         formData.append('username', username);
         formData.append('password', password);
 
@@ -59,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Usuário ou senha inválidos!'); //Falha caso a api der erro
 
             const data = await response.json();
-            apiToken = data.access_token;  //Aqui pegamos o token da api quando der sucesso de login
+            apiToken = data.access_token;   //Aqui pegamos o token da api quando der sucesso de login
 
             //com o login feito, manipula a página para aparecer a seção de upload
             loginSection.classList.add('hidden');
@@ -121,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Mostra o resultado da análise
-            displayResult(data);
+            displayResult("O Upload foi feito, aguarde alguns segundos para a análise e poderá pesquisar");
 
         } catch (error) {
             displayError(error.message);
@@ -134,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Lógica de busca ---
+    // --- Lógica de busca 
     searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -162,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // requisição a api
-            const response = await fetch(`${API_URL}/contracts/${filename}`, {
+            const response = await fetch(`${API_URL}/contracts/${encodeURIComponent(filename)}`, { // Use encodeURIComponent para nomes com caracteres especiais
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${apiToken}` }
             });
@@ -186,8 +188,102 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Lógica de Deletar Contrato 
+    deleteContractForm.addEventListener('submit', async (e) => { //async: palavra chave para função que realizará operações demoradas, e: objeto do evento
+        e.preventDefault(); // Impede o envio padrão do formulário
+        
+        const deleteButton = deleteContractForm.querySelector('button');
+        const filenameToDelete = deleteFilenameInput.value.trim(); // Pega o nome do arquivo e remove espaços extras
 
-    // --- Logica de listar os contratos ---
+        // Verificação de preenchimento do campo
+        if (!filenameToDelete) {
+            alert('Por favor, insira o nome do arquivo para deletar.');
+            return; // Aborta a execução se o campo estiver vazio
+        }
+
+        // Verificação do token de autenticação
+        if (!apiToken) {
+            alert('Token expirado. Relogue!');
+            return; // Aborta a execução se o token não existir
+        }
+
+        // Feedback visual para o usuário
+        deleteButton.disabled = true; // Desabilita o botão
+        deleteButton.textContent = 'Deletando...'; // Altera o texto do botão
+        loadingDiv.classList.remove('hidden'); // Mostra o indicador de carregamento
+        loadingDiv.textContent = 'Deletando contrato...'; // Altera o texto do carregamento
+        resultSection.innerHTML = ''; // Limpa a área de resultados de busca/upload
+        contractsListOutput.innerHTML = ''; // Limpa a lista de contratos, se houver
+
+        try {
+            // Faz uma requisição GET para o endpoint de busca de contrato por nome, que você já possui.
+            // O encodeURIComponent é usado para garantir que o nome do arquivo seja seguro para a URL.
+            const getContractUrl = `${API_URL}/contracts/${encodeURIComponent(filenameToDelete)}`;
+            
+            const getResponse = await fetch(getContractUrl, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${apiToken}`, // Inclui o token para autenticação
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!getResponse.ok) {
+                // Se a busca falhar 
+                const errorData = await getResponse.json(); // Pega a mensagem de erro da API
+                if (getResponse.status === 404) {
+                    throw new Error(`Contrato com o nome de arquivo "${filenameToDelete}" não encontrado.`);
+                } else {
+                    // Lança um erro com a mensagem detalhada da API ou uma mensagem genérica
+                    throw new Error(errorData.detail || 'Erro ao buscar contrato para deletar.');
+                }
+            }
+
+            const contractDetails = await getResponse.json(); // Converte a resposta para JSON
+            const contractIdToDelete = contractDetails.id; // Extrai o ID do contrato encontrado
+
+            // Passo 2: Usar o ID recuperado para chamar o endpoint de exclusão
+            // Agora que temos o ID, fazemos uma requisição DELETE para o endpoint de exclusão por ID.
+            const deleteUrl = `${API_URL}/contracts/${contractIdToDelete}`;
+            const deleteResponse = await fetch(deleteUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${apiToken}`, // Inclui o token para autenticação
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const deleteData = await deleteResponse.json(); // Converte a resposta de exclusão para JSON
+
+            if (!deleteResponse.ok) {
+                // Se a exclusão falhar
+                throw new Error(deleteData.detail || 'Erro ao deletar o contrato.');
+            }
+
+            // Exibe mensagem de sucesso na área de resultados
+            displayResult({ message: `Contrato "${filenameToDelete}" (ID: ${contractIdToDelete}) deletado com sucesso!` });
+            deleteFilenameInput.value = ''; // Limpa o campo de entrada após o sucesso
+
+            // Opcional: Recarregar a lista de contratos se ela estiver visível
+            // Se você quiser que a lista de contratos seja atualizada automaticamente após a exclusão:
+            // if (!contractsListOutput.classList.contains('hidden')) { // Verifica se a lista está visível
+            //     listFilesButton.click(); // Simula o clique no botão de "Ver todos os arquivos" para atualizar a lista
+            // }
+
+        } catch (error) {
+            // Captura e exibe quaisquer erros que ocorram durante a busca ou a deleção
+            displayError(`Erro ao deletar: ${error.message}`);
+        } finally {
+            // Reseta o feedback visual e o estado do formulário/botão
+            deleteButton.disabled = false; // Habilita o botão novamente
+            deleteButton.textContent = 'Deletar'; // Restaura o texto original do botão
+            loadingDiv.classList.add('hidden'); // Esconde o indicador de carregamento
+            loadingDiv.textContent = 'Processando...'; // Reseta o texto do carregamento para o padrão
+        }
+    });
+
+
+    // --- Logica de listar os contratos 
     listFilesButton.addEventListener('click', async () => {
         if (!apiToken) {
             alert('Token expirado. Relogue!');
@@ -201,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
         contractsListOutput.innerHTML = ''; // Limpa a lista antiga
 
         try {
+            // de fato a requisição a api
             const response = await fetch(`${API_URL}/contracts/list/filenames`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${apiToken}` }

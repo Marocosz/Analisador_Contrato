@@ -72,3 +72,15 @@ def get_all_contract_filenames(db: Session):
     # Seleciona a coluna dos "filename" do objeto "Contract"
     statement = select(models.Contract.filename)
     return db.exec(statement).all()  # Aqui a pesquisa statment é feita pelo db e retornada a lista, (.all())
+
+
+def delete_contract(db: Session, contract_id: int) -> models.Contract | None:
+    """
+    Encontra um contrato pelo ID e o deleta do banco de dados.
+    """
+    db_contract = db.get(models.Contract, contract_id)
+    if db_contract:
+        db.delete(db_contract)
+        db.commit()
+        return db_contract
+    return None # Retorna None se o contrato não for encontrado
