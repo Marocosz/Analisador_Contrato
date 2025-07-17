@@ -24,7 +24,8 @@ app = FastAPI(title="Contract Analyzer API", lifespan=lifespan)
 
 # "http://localhost:8080",  # Servidor comum
 origins = [
-    "https://site-contratos-marcos.onrender.com"  # Servidor render
+    "https://site-contratos-marcos.onrender.com",  # Servidor render
+    "http://localhost:8080" 
 ]
 
 app.add_middleware(

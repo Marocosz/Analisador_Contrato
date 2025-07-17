@@ -4,7 +4,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_unstructured import UnstructuredLoader
-from . import schemas
+from . import schemas, utils
 
 load_dotenv()
 
@@ -12,8 +12,7 @@ def analyze_contract_with_ai(file_path: str) -> schemas.ContractData:
     """
     Carrega um documento, extrai o texto e usa a IA para analisar o conteúdo.
     """
-    loader = UnstructuredLoader(file_path)  # Carrega o arquivo
-    document_text = loader.load()[0].page_content  # Texto do arquivo
+    document_text = utils.extract_text_from_file(file_path) # Texto do arquivo
 
     # Inicializa a IA
     llm = ChatGoogleGenerativeAI(
