@@ -12,6 +12,9 @@ from . import auth, crud, models, schemas, database, processing
 from .database import engine  # Importamos o engine para o lifespan
 
 # A função de ciclo de vida que cria as tabelas na inicialização
+# Serve para executar o codigo dentro dessa função antes da aplicação FastAPI iniciar, de depois dela ser desligada
+# para isso, você assegura que, sempre que sua aplicação for iniciada (seja em desenvolvimento ou produção), ela 
+# automaticamente verificará e criará as tabelas definidas em seus modelos SQLModel, caso elas ainda não existam. 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Iniciando a aplicação...")
