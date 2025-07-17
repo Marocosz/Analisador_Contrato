@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const listFilesButton = document.getElementById('list-files-button');
     const contractsListOutput = document.getElementById('contracts-list-output');
 
-    const API_URL = 'https://analisador-contratos.onrender.com/';
+    const API_URL = 'https://analisador-contratos.onrender.com/';  // ATUALIZAAAAA
     let apiToken = null;
 
     // Função para formatar a saída de Upload e Busca
