@@ -1,14 +1,14 @@
-from sqlmodel import Session
+from sqlmodel import Session, select
 from . import models, auth, schemas
 
 
-# --- Funções de Usuário ---
+# --- Funções de Usuário 
 def get_user_by_username(db: Session, username: str):
     """
     Busca o usuário no BD pelo seu nome
     """
-    #Inicia a consulta na tabela "User" e filtra pelo username
-    return db.query(models.User).filter(models.User.username == username).first()
+    statement = select(models.User).where(models.User.username == username)  # definição da pesquisa
+    return db.exec(statement).first()  # Execução da pesquisa pelo db
 
 def create_user(db: Session, user: schemas.UserCreate):
     """
@@ -22,12 +22,13 @@ def create_user(db: Session, user: schemas.UserCreate):
     return db_user
 
 
-# --- Funções de Contrato ---
+# --- Funções de Contrato 
 def get_contract_by_filename(db: Session, filename: str):
     """
     Busca o contrato no BD pelo seu nome
     """
-    return db.query(models.Contract).filter(models.Contract.filename == filename).first()
+    statement = select(models.Contract).where(models.Contract.filename == filename)  # Definição da pesquisa
+    return db.exec(statement).first() # Execução da pesquisa pelo db pegar o primeiro item (.first())
 
 def create_contract(db: Session, filename: str):
     """
@@ -68,7 +69,6 @@ def update_contract_status(db: Session, contract_id: int, status: str):
 
 
 def get_all_contract_filenames(db: Session):
-    # O .query(models.Contract.filename) seleciona apenas a coluna 'filename'
-    results = db.query(models.Contract.filename).all()
-    # O resultado vem como uma lista de tuplas, ex: [('contrato1.pdf',), ('contrato2.pdf',)]
-    return [filename for (filename,) in results]
+    # Seleciona a coluna dos "filename" do objeto "Contract"
+    statement = select(models.Contract.filename)
+    return db.exec(statement).all()  # Aqui a pesquisa statment é feita pelo db e retornada a lista, (.all())

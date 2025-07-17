@@ -1,19 +1,29 @@
-import os  # <--- ADICIONE ESTA LINHA
+import os
+import shutil
+import tempfile
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session
-import shutil
-import tempfile
 
 from . import auth, crud, models, schemas, database, processing
+from .database import engine # Importamos o engine para o lifespan
 
-models.SQLModel.metadata.create_all(bind=database.engine)  # Criação dos modelos - se já não foram criados
+# A função de ciclo de vida que cria as tabelas na inicialização
+@asynccontextmanager  # Decorator pra determinar gerenciador de eventos
+async def lifespan(app: FastAPI):
+    print("Iniciando a aplicação...")
+    models.SQLModel.metadata.create_all(bind=engine)  # Criando as tabelas (Se não criadas)
+    yield  # Linha de divisão (Pausa e o próximo só acontece ao encerrar a aplicação)
+    print("Finalizando a aplicação.")
 
-app = FastAPI(title="Contract Analyzer API")
+
+# Inicialização do App e o lifespan como função de inicialização 
+app = FastAPI(title="Contract Analyzer API", lifespan=lifespan)
 
 origins = [
-    "http://localhost:8080", # Endereço comum para outros frameworks
+    "http://localhost:8080", # Endereço comum
 ]
 
 app.add_middleware(
@@ -24,6 +34,10 @@ app.add_middleware(
     allow_headers=["*"], # Permite todos os cabeçalhos
 )
 
+@app.get("/", tags=["Root"])
+def read_root():
+    """Endpoint raiz para verificar se a API está online."""
+    return {"status": "API is running!"}
 
 # --- Endpoints de Autenticação e Usuários ---
 # responde_model = UserRead para definição da estrutura

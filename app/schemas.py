@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict 
 from typing import Optional
 # Aqui dentro do "schemas.py" os esquemas representam os dados que entram e saem da API
 
@@ -14,8 +14,8 @@ class UserRead(BaseModel):
     id: int
     username: str
 
-    class Config:
-        from_attributes = True # Ajuda o Pydantic a ler dados de modelos do banco
+    # configura o classe para conseguir ler
+    model_config = ConfigDict(from_attributes=True)  # from_attributes=True serve para o pydantic conseguir ler os objetos python
 
 
 # Esquema da resposta do endpoint de login
