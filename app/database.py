@@ -2,8 +2,8 @@ from sqlmodel import create_engine, Session
 import os
 
 # Se não encontrar, usa o valor padrão (nosso arquivo SQLite local).
-# DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///database.db")  # Online
-DATABASE_URL="sqlite:///database.db"  # Local
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///database.db")  # Online
+# DATABASE_URL="sqlite:///database.db"  # Local
 
 # O argumento 'connect_args' é um requisito apenas do SQLite.
 # Este 'if' garante que só vamos usar esse argumento quando estivermos nos conectando a um banco SQLite.

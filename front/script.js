@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // http://127.0.0.1:8000 para local
     // https://analisador-contratos.onrender.com render
-    const API_URL = 'http://127.0.0.1:8000';  // ATUALIZAAAAA
+    const API_URL = 'https://analisador-contratos.onrender.com';  // ATUALIZAAAAA
     let apiToken = null;
 
     // Função para formatar a saída de Upload e Busca
