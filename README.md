@@ -17,6 +17,7 @@ API RESTful que utiliza Inteligência Artificial para extrair e organizar inform
 - [4 - Site Hospedado](#4---site-hospedado-)
 - [5 - Como usar na sua máquina (Obsoleto)](#5---como-usar-na-sua-máquina-obsoleto-)
 - [6 - Como usar na sua máquina (ATUALIZADO)](#6---como-usar-na-sua-máquina-atualizado-)
+
 ---
 
 ## 1 - Estrutura 🏗️
