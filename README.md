@@ -11,12 +11,12 @@ API RESTful que utiliza Inteligência Artificial para extrair e organizar inform
 
 ## 📑 Tópicos
 
-1.  [Construção](#1---construcao-)
-2.  [Funcionalidades da API](#2---funcionalidades-da-api-)
-3.  [Frontend](#3---frontend-)
-4.  [Site Hospedado](#4---site-hospedado-)
-5.  [Como usar na sua máquina (Obsoleto)](#5---como-usar-na-sua-máquina-obsoleto-)
-6.  [Como usar na sua máquina (ATUALIZADO)](#6---como-usar-na-sua-máquina-atualizado-)
+- [1 - Construção](#1---construcao-)
+- [2 - Funcionalidades da API](#2---funcionalidades-da-api-)
+- [3 - Frontend](#3---frontend-)
+- [4 - Site Hospedado](#4---site-hospedado-)
+- [5 - Como usar na sua máquina (Obsoleto)](#5---como-usar-na-sua-maquina-obsoleto)
+- [6 - Como usar na sua máquina (ATUALIZADO)](#6---como-usar-na-sua-maquina-atualizado-)
 ---
 
 ## 1 - Construção 🏗️
