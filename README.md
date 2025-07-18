@@ -11,7 +11,7 @@ API RESTful que utiliza Inteligência Artificial para extrair e organizar inform
 
 ## 📑 Tópicos
 
-- [1 - Estrutura](#1---estrutura-)
+- [1 - Estrutura](#user-content-1---estrutura-️)
 - [2 - Funcionalidades da API](#2---funcionalidades-da-api-)
 - [3 - Frontend](#3---frontend-)
 - [4 - Site Hospedado](#4---site-hospedado-)
