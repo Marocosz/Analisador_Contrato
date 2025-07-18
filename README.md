@@ -336,7 +336,7 @@ O site, a API e o banco de dados PostgreSQL estão completamente hospedados na p
 > No próximo tópico, você aprenderá como rodar o projeto localmente com o banco configurado corretamente.
 
 
-## 5 - Como usar na sua máquina (Obsoleto)❓
+## 5 - Como usar na sua máquina (Obsoleto) ❓
 
 ### ✅ Pré-requisitos
 
