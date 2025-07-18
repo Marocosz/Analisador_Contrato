@@ -524,7 +524,7 @@ Pronto! Você criou seu usuário, autenticou e acessou um endpoint protegido usa
 
 ## 6 - Como usar na sua máquina (ATUALIZADO) 🐳
 
-Este projeto é totalmente containerizado com Docker, o que torna a configuração do ambiente de desenvolvimento incrivelmente simples e rápida. **Este é o método recomendado.**
+Este projeto foi atualizado para virar totalmente containerizado com Docker, o que torna a configuração do ambiente de desenvolvimento incrivelmente simples e rápida.
 
 ### ✅ Pré-requisitos
 
@@ -554,7 +554,7 @@ Este projeto é totalmente containerizado com Docker, o que torna a configuraç�
 
     As senhas e chaves secretas não ficam no código. Você precisa criá-las em um arquivo local para o Docker poder usá-las
 
-    - Na raiz do projeto, crie um arquivo chamada `.env`
+    - Na raiz do projeto, crie um arquivo chamado `.env`
 
     - Copie e cole o seguinte conteúdo dentro dele, substituindo pelos seus próprios valores:
     
