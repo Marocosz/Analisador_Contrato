@@ -1,15 +1,28 @@
-# Ignora variáveis de ambiente
+# Variáveis de Ambiente
 .env
 .env.*
 
-# Banco de dados SQLite (se usado localmente)
+# Ambientes Virtuais do Python
+venv/
+env/
+.venv/
+
+# Arquivos de Banco de Dados Locais
 *.sqlite3
 *.db
 
-# Logs e arquivos temporários
+# Arquivos de Cache e Compilados do Python
+__pycache__/
+*.py[cod]
+
+# Logs e Arquivos Temporários
 *.log
 *.tmp
 
-# Ignora arquivos Python compilados
-__pycache__/
-*.py[cod]
+# Configurações de Editores de Código e IDEs
+.vscode/
+.idea/
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db

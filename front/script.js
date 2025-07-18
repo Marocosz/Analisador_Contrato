@@ -12,9 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteContractForm = document.getElementById('delete-contract-form');
     const deleteFilenameInput = document.getElementById('delete-filename');
 
-    // http://127.0.0.1:8000 para local
-    // https://analisador-contratos.onrender.com render
-    const API_URL = 'https://analisador-contratos.onrender.com';    // ATUALIZAAAAA
+    let API_URL;
+
+    // Verifica em qual endereço o frontend está rodando
+    if (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') {
+        // Se for local, aponta para o backend Docker local
+        API_URL = 'http://127.0.0.1:8000';
+        console.log('Ambiente de desenvolvimento detectado. API URL:', API_URL);
+    } else {
+        // Senão, aponta para o backend de produção no Render
+        API_URL = 'https://analisador-contratos.onrender.com';
+        console.log('Ambiente de produção detectado. API URL:', API_URL);
+    }
+
     let apiToken = null;
 
     // Função para formatar a saída de Upload e Busca
@@ -80,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica de Upload 
     uploadForm.addEventListener('submit', async (e) => { //async: palavra chave para função que realizará operações demoradas, e: objeto do evento
         e.preventDefault(); //Não recarregar a página
-        
+
         // Verificação token
         if (!apiToken) {
             alert('Token expirado. Relogue');
             return;
         }
-        
+
         const uploadButton = uploadForm.querySelector('button');
         const fileInput = document.getElementById('contract-file');
 
@@ -95,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Por favor, selecione um arquivo para upload.');
             return;
         }
-        
+
         const file = fileInput.files[0]; //como file pode conter vários arquivos, aqui selecionamos o primeiro da lista
         const formData = new FormData(); //criação do objeto (caixa de correio) para a api
         formData.append('file', file); //colocamos o arquivo do upload dentro da "caixa"
@@ -139,13 +149,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica de busca 
     searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         // Verificação do token
         if (!apiToken) {
             alert('Token expirado. Relogue!');
             return;
         }
-        
+
         const searchButton = searchForm.querySelector('button');
         const filenameInput = document.getElementById('search-filename');
         const filename = filenameInput.value.trim(); //trim para remover espaços
@@ -191,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica de Deletar Contrato 
     deleteContractForm.addEventListener('submit', async (e) => { //async: palavra chave para função que realizará operações demoradas, e: objeto do evento
         e.preventDefault(); // Impede o envio padrão do formulário
-        
+
         const deleteButton = deleteContractForm.querySelector('button');
         const filenameToDelete = deleteFilenameInput.value.trim(); // Pega o nome do arquivo e remove espaços extras
 
@@ -219,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Faz uma requisição GET para o endpoint de busca de contrato por nome, que você já possui.
             // O encodeURIComponent é usado para garantir que o nome do arquivo seja seguro para a URL.
             const getContractUrl = `${API_URL}/contracts/${encodeURIComponent(filenameToDelete)}`;
-            
+
             const getResponse = await fetch(getContractUrl, {
                 method: 'GET',
                 headers: {

@@ -1,0 +1,30 @@
+# docker-compose.yml
+
+# Versão do Docker Compose
+version: '3.8'
+
+# Definimos os serviços (contêineres)
+services:
+  # Serviço da nossa API
+  api:
+    build: .
+    container_name: contract_analyzer_api
+    ports:
+      - "8000:8000"  # O docker vai usar essa porta como a da api, ou seja, as requisições chegarão aqui no computador local
+    # Docker carrega as variaveis do env
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  frontend:
+    # Diz ao Docker para construir a imagem usando o Dockerfile da pasta ./front
+    build:
+      context: ./front
+    container_name: contract_analyzer_frontend
+    ports:
+      # Expõe a porta 80 do contêiner Nginx na porta 8080 do seu computador
+      - "8080:80"
+    # Garante que o frontend só inicie depois que a API estiver pronta
+    depends_on:
+      - api
+    restart: unless-stopped
