@@ -11,7 +11,7 @@ API RESTful que utiliza Inteligência Artificial para extrair e organizar inform
 
 ## 📑 Tópicos
 
-- [1 - Estrutura](#1---estrutura-)
+- [1 - Estrutura](#estrutura)
 - [2 - Funcionalidades da API](#2---funcionalidades-da-api-)
 - [3 - Frontend](#3---frontend-)
 - [4 - Site Hospedado](#4---site-hospedado-)
@@ -20,7 +20,7 @@ API RESTful que utiliza Inteligência Artificial para extrair e organizar inform
 
 ---
 
-## 1 - Estrutura 🏗️
+## 1 - Estrutura 🏗️ {#estrutura}
 
 A aplicação foi desenvolvida em **Python 3.13.15**, com suporte a dois bancos de dados relacionais: **MySQL** e **PostgreSQL** (hospedado via Render).
 
