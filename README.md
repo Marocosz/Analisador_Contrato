@@ -594,6 +594,53 @@ Este projeto é totalmente containerizado com Docker, o que torna a configuraç�
     - Acesse o frontend por: [http://localhost:8080](http://localhost:8080)
     - Acesse a doc da api por: [http://localhost:8000/docs](http://localhost:8000/docs)
 
+### Passo a passo para criar e autenticar um usuário
+
+Dentro da documentação da api:
+
+#### 1️⃣ Criar um usuário
+
+- Navegue até o endpoint **POST /users/**.  
+- Clique em **"Try it out"**.  
+- No corpo da requisição, informe o username e password, por exemplo:
+
+    {
+      "username": "marcos",
+      "password": "123"
+    }
+
+- Clique em **"Execute"**.  
+- Se tudo ocorrer bem, você verá a resposta indicando que o usuário foi criado com sucesso.
+
+---
+
+#### 2️⃣ Fazer login
+
+- Navegue até o endpoint **POST /login**.  
+- Clique em **"Try it out"**.  
+- No corpo da requisição, informe o mesmo username e password usados na criação, exemplo:
+
+    {
+      "username": "marco",
+      "password": "123"
+    }
+
+- Clique em **"Execute"**.  
+
+---
+
+#### 3️⃣ Acessar endpoints protegidos
+
+- Navegue até o endpoint **GET /users/me**.  
+- No canto superior direito da página do Swagger, clique em **"Authorize"** (um cadeado).  
+- Coloque as credenciais (username e password) que você criou anteriormente.
+- Clique em **"Authorize"** e depois feche a janela.  
+- Agora, no endpoint **GET /users/me**, clique em **"Try it out"** e depois em **"Execute"** para testar o acesso autenticado.
+
+---
+
+Pronto! Você criou seu usuário, autenticou e acessou um endpoint protegido usando o token JWT via Swagger UI.
+
 ---
 
 ### 🛠 Suporte
