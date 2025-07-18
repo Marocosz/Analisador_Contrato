@@ -10,7 +10,7 @@ API RESTful que utiliza Inteligência Artificial para extrair e organizar inform
 - [PyPDF2](https://pypi.org/project/PyPDF2/)
 
 ## 📑 Tópicos
-1.  [Construção](#1---construção-)
+1.  [Construção](#1---construcao-)
 2.  [Funcionalidades da API](#2---funcionalidades-da-api-)
 3.  [Frontend](#3---frontend-)
 4.  [Site Hospedado](#4---site-hospedado-)
